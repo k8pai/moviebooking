@@ -1,1 +1,1 @@
-const url = `mongodb://localhost:27017/moviesdb`;
+exports.url = `mongodb://localhost:27017/moviesdb`;
