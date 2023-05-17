@@ -8,22 +8,22 @@ const userSchema = new Schema({
 	username: { type: String, required: true },
 	contact: { type: String, required: true },
 	password: { type: String, required: true },
-	role: { type: String, required: true },
-	isLoggedIn: { type: Boolean, required: true },
-	uuid: { type: String, required: true },
-	accesstoken: { type: String, required: true },
+	role: String,
+	isLoggedIn: Boolean,
+	uuid: String,
+	accesstoken: String,
 	coupens: [
 		{
-			id: { type: Number, required: true },
-			discountValue: { type: Number, required: true },
+			id: Number,
+			discountValue: Number,
 		},
 	],
 	bookingRequests: [
 		{
-			reference_number: { type: Number, required: true },
-			coupon_code: { type: Number, required: true },
-			show_id: { type: Number, required: true },
-			tickets: [{ type: Number, required: true }],
+			reference_number: Number,
+			coupon_code: Number,
+			show_id: Number,
+			tickets: [Number],
 		},
 	],
 });

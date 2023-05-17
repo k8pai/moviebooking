@@ -7,11 +7,14 @@ const artistRouter = require('./routes/artist.routes');
 const { Artist, Genre, User, Movie } = require('./models');
 const mongoose = require('mongoose');
 const { url } = require('./config/db.config');
+const userRouter = require('./routes/user.routes');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
 	res.json({
@@ -24,6 +27,8 @@ app.use('/api', movieRouter);
 app.use('/api', genreRouter);
 
 app.use('/api', artistRouter);
+
+app.use('/api', userRouter);
 
 mongoose
 	.connect(url, {
