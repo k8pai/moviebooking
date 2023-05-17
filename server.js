@@ -11,11 +11,19 @@ const { url } = require('./config/db.config');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use('/movies', movieRouter);
+app.use(cors());
 
-app.use('/genres', genreRouter);
+app.get('/', (req, res) => {
+	res.json({
+		message: 'Welcome to Upgrad Movie booking application development.',
+	});
+});
 
-app.use('/artists', artistRouter);
+app.use('/api', movieRouter);
+
+app.use('/api', genreRouter);
+
+app.use('/api', artistRouter);
 
 mongoose
 	.connect(url, {
