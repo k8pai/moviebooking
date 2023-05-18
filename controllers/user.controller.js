@@ -92,3 +92,39 @@ exports.logout = async (req, res) => {
 		return res.status(500).send('Internal server error');
 	}
 };
+
+exports.getCouponCode = async (req, res) => {
+	const { code } = req.query;
+	const { authorization } = req.headers;
+	try {
+		const token = authorization.split(' ').pop();
+		const data = await findUser({ accesstoken: token });
+		if (!data) {
+			res.status(400).json({ message: 'No such coupon code found.' });
+		}
+		const obj = data.coupens.length
+			? data.coupens.filter((el) => el.id === code)
+			: {};
+
+		res.status(200).json(obj);
+	} catch (error) {
+		return res.status(500).send('Internal server error');
+	}
+};
+
+exports.bookShow = async (req, res) => {
+	const { authorization } = req.headers;
+	const { customerUuid, bookingRequest } = req.body;
+	try {
+		console.log(authorization);
+		const token = authorization.split(' ').pop();
+		const uuid = customerUuid;
+		const customer = await findUser({ uuid: uuid });
+		bookingRequest.reference_number = 12345;
+		customer.bookingRequests.push(bookingRequest);
+		const response = await updateUser({ uuid: uuid }, customer);
+		res.status(200).json(data.bookingRequest);
+	} catch (error) {
+		res.status(500).send('Internal server error');
+	}
+};
