@@ -4,7 +4,6 @@ exports.getMovies = async (req, res) => {
 	res.status(200).send('All Movies Data in JSON format from Mongo DB');
 };
 
-// ?status=RELEASED&title={title}&genres={genres}&artists={artists}&start_date={startdate}&end_date={enddate}
 exports.findAllMovies = async (req, res) => {
 	try {
 		const { status, title, genres, artists, start_date, end_date } =
@@ -23,20 +22,42 @@ exports.findAllMovies = async (req, res) => {
 			query.genres = { $in: genres.split(',') };
 		}
 		if (artists) {
-			console.log('artists = ', artists);
-			const names = artists.split(',');
-			console.log('names = ', names);
+			// const names = artists.split(',');
 			query['artists.first_name'] = { $regex: new RegExp(artists, 'i') };
+		}
+		let response = await Movie.find(query);
+		if (start_date) {
+			let [year, month, date] = start_date.split('-');
+			const startDate = [date, month, year].join('/');
+			response = response.filter(
+				(el) =>
+					new Date(el.release_date).toLocaleDateString() > startDate,
+			);
+		}
+
+		if (end_date) {
+			let [year, month, date] = end_date.split('-');
+			const endDate = [date, month, year].join('/');
+
+			response = response.filter(
+				(el) =>
+					new Date(el.release_date).toLocaleDateString() < endDate,
+			);
 		}
 
 		if (start_date && end_date) {
-			query.release_date = {
-				$gte: new Date(start_date),
-				$lte: new Date(end_date),
-			};
+			let [year, month, date] = start_date.split('-');
+			const startDate = [date, month, year].join('/');
+			[year, month, date] = end_date.split('-');
+			const endDate = [date, month, year].join('/');
+			response = response.filter(
+				(el) =>
+					new Date(el.release_date).toLocaleDateString() >
+						startDate &&
+					new Date(el.release_date).toLocaleDateString() < endDate,
+			);
 		}
 
-		const response = await Movie.find(query);
 		res.status(200).json({
 			status: 'success',
 			message: 'OK',
