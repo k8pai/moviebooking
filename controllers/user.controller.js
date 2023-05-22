@@ -31,6 +31,23 @@ exports.signUp = async (req, res) => {
 		req.body;
 	try {
 		const count = await userCount();
+
+		const isRegisteredEmail = await User.find({ email: email_address });
+
+		if (isRegisteredEmail) {
+			return res
+				.status(400)
+				.send('Email is already registered. Try another email!');
+		}
+
+		const isRegisteredNumber = await User.find({ contact: mobile_number });
+
+		if (isRegisteredNumber) {
+			return res
+				.status(400)
+				.send('Mobile number is already registered. Try loggin in.');
+		}
+
 		const data = {
 			userid: count + 1,
 			email: email_address,
@@ -56,9 +73,16 @@ exports.login = async (req, res) => {
 	try {
 		const encoded = authorization.split(' ').pop();
 		const [username, password] = atob(encoded).split(':');
+
+		const isRegisteredUsername = await User.findOne({ username: username });
+
+		if (!isRegisteredUsername) {
+			return res.status(200).send(`No such username found, Try again.`);
+		}
+
 		const data = await checkUser(username, password);
 		if (!data) {
-			return res.status(404).json({ id: null, 'access-token': null });
+			return res.status(404).send('Wrong password, try again.');
 		}
 		data.uuid = uuid();
 		data.accesstoken = token;
@@ -84,9 +108,6 @@ exports.logout = async (req, res) => {
 		data.accesstoken = '';
 		data.isLoggedIn = false;
 		const response = await updateUser({ userid: data.userid }, data);
-		// if(response.acknowledged){
-		// 	res.status(200).json({ message: 'Logged Out successfully.' });
-		// }
 		res.status(200).json({ message: 'Logged Out successfully.' });
 	} catch (err) {
 		return res.status(500).send('Internal server error');
