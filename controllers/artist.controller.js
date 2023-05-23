@@ -1,9 +1,5 @@
 const { Artist } = require('../models');
 
-exports.getArtists = async (req, res) => {
-	res.status(200).send('All Artists Data in JSON format from Mongo DB');
-};
-
 exports.findAllArtists = async (req, res) => {
 	try {
 		const data = await Artist.find();

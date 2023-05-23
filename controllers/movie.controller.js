@@ -1,9 +1,5 @@
 const { Movie } = require('../models');
 
-exports.getMovies = async (req, res) => {
-	res.status(200).send('All Movies Data in JSON format from Mongo DB');
-};
-
 exports.findAllMovies = async (req, res) => {
 	try {
 		const { status, title, genres, artists, start_date, end_date } =

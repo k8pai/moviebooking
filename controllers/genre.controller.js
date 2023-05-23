@@ -1,9 +1,5 @@
 const { Genre } = require('../models');
 
-exports.getGenres = async (req, res) => {
-	res.status(200).send('All Genres Data in JSON format from Mongo DB');
-};
-
 exports.findAllGenres = async (req, res) => {
 	try {
 		const data = await Genre.find();
