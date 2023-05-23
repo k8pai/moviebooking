@@ -1,11 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const bodyparser = require('body-parser');
 const movieRouter = require('./routes/movie.routes');
 const genreRouter = require('./routes/genre.routes');
 const artistRouter = require('./routes/artist.routes');
-const { Artist, Genre, User, Movie } = require('./models');
-const mongoose = require('mongoose');
+const { connect: dbConnect } = require('mongoose');
 const { url } = require('./config/db.config');
 const userRouter = require('./routes/user.routes');
 
@@ -22,19 +20,17 @@ app.get('/', (req, res) => {
 	});
 });
 
+// all routes
 app.use('/api', movieRouter);
-
 app.use('/api', genreRouter);
-
 app.use('/api', artistRouter);
-
 app.use('/api', userRouter);
 
-mongoose
-	.connect(url, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	})
+// mongodb connection
+dbConnect(url, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+})
 	.then(() => {
 		console.log('Connected to the database!');
 	})
